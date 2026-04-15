@@ -83,35 +83,63 @@ function findSubtitleAtTime(subtitles, timeStr) {
   return '';
 }
 
-// Create or update subtitle overlay
+// Create or update subtitle overlay (Netflix-like styling)
 function createSubtitleOverlay() {
   let overlay = document.getElementById('sub-loader-overlay');
   
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.id = 'sub-loader-overlay';
+    
+    // Netflix-style subtitle container
     overlay.style.cssText = `
       position: fixed;
-      bottom: 120px;
+      bottom: 70px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 4px;
-      font-size: 16px;
-      text-align: center;
-      z-index: 10000;
-      max-width: 90%;
-      max-height: 100px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      word-wrap: break-word;
-      font-family: Arial, sans-serif;
+      max-width: 85%;
+      width: auto;
+      z-index: 10001;
       display: none;
-      line-height: 1.4;
+      pointer-events: none;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
     `;
+    
+    // Create inner text container for better control (matches Netflix styling)
+    overlay.innerHTML = `
+      <div id="sub-loader-text" style="
+        background: rgba(0, 0, 0, 0.85);
+        color: #ffffff;
+        padding: 14px 24px;
+        border-radius: 2px;
+        text-align: center;
+        font-size: 18px;
+        line-height: 1.6;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+        max-height: 220px;
+        overflow: hidden;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      "></div>
+    `;
+    
     document.body.appendChild(overlay);
+    
+    // Adjust position based on video element
+    setTimeout(() => {
+      const video = getNetflixVideoElement();
+      if (video) {
+        const rect = video.getBoundingClientRect();
+        if (rect && rect.bottom) {
+          overlay.style.bottom = (window.innerHeight - rect.bottom + 20) + 'px';
+        }
+      }
+    }, 500);
   }
   
   return overlay;
@@ -120,6 +148,7 @@ function createSubtitleOverlay() {
 // Update subtitle display
 function updateSubtitleDisplay(subtitles, videoElement) {
   const overlay = createSubtitleOverlay();
+  const textContainer = document.getElementById('sub-loader-text');
   
   // Update subtitle every 100ms
   const updateInterval = setInterval(() => {
@@ -128,11 +157,28 @@ function updateSubtitleDisplay(subtitles, videoElement) {
       return;
     }
     
+    // Adjust position for fullscreen mode
+    const isFullscreen = document.fullscreenElement || 
+                         document.webkitFullscreenElement || 
+                         document.mozFullScreenElement;
+    
+    if (isFullscreen || videoElement.parentElement?.requestFullscreen) {
+      overlay.style.position = 'fixed';
+      overlay.style.bottom = '60px';
+    }
+    
     const currentTime = videoElement.currentTime;
     const subtitle = findSubtitleForTime(subtitles, currentTime);
     
     if (subtitle) {
-      overlay.innerHTML = subtitle.replace(/\n/g, '<br>');
+      // Sanitize and format subtitle text
+      const cleanText = subtitle
+        .replace(/\r/g, '') // Remove carriage returns
+        .replace(/<br>/gi, '\n') // Convert HTML breaks to newlines
+        .trim();
+      
+      // Replace newlines with <br> for proper multi-line display
+      textContainer.innerHTML = cleanText.replace(/\n/g, '<br>');
       overlay.style.display = 'block';
     } else {
       overlay.style.display = 'none';
@@ -162,11 +208,12 @@ function findSubtitleForTime(subtitles, currentTime) {
   return null;
 }
 
-// Find Netflix video player
+// Find Netflix video player and container
 function getNetflixVideoElement() {
   // Try to find video element in Netflix player
   const videoContainer = document.querySelector('.VideoContainer') || 
                          document.querySelector('[data-videoid]') ||
+                         document.querySelector('.player-video-container') ||
                          document.querySelector('video');
   
   if (videoContainer) {
@@ -175,6 +222,14 @@ function getNetflixVideoElement() {
   }
   
   return document.querySelector('video');
+}
+
+// Find Netflix subtitle container for better positioning
+function getNetflixSubtitleContainer() {
+  return document.querySelector('.player-subtitle-container') || 
+         document.querySelector('.AkiraPlayer--content') ||
+         document.querySelector('[role="presentation"]') ||
+         document.querySelector('.VideoContainer');
 }
 
 // Load subtitles
@@ -229,6 +284,42 @@ function loadSubtitles(request, sendResponse) {
   }
 }
 
+// Convert subtitles to VTT format and create native track element
+function createNativeTrack(subtitles, videoElement) {
+  try {
+    // Convert parsed subtitles back to VTT format
+    let vttContent = 'WEBVTT\n\n';
+    
+    subtitles.forEach(sub => {
+      vttContent += sub.time + '\n';
+      vttContent += sub.text + '\n\n';
+    });
+    
+    // Create blob from VTT content
+    const blob = new Blob([vttContent], { type: 'text/vtt' });
+    const url = URL.createObjectURL(blob);
+    
+    // Remove existing sub-loader tracks
+    const existingTracks = videoElement.querySelectorAll('track[kind="captions"][label="Sub Loader"]');
+    existingTracks.forEach(track => track.remove());
+    
+    // Create native track element
+    const track = document.createElement('track');
+    track.kind = 'captions';
+    track.label = 'Sub Loader';
+    track.srclang = 'en';
+    track.src = url;
+    
+    videoElement.appendChild(track);
+    console.log('[Sub Loader] Native track added to video element');
+    
+    return true;
+  } catch (error) {
+    console.error('[Sub Loader] Error creating native track:', error);
+    return false;
+  }
+}
+
 // Process and display subtitles
 function processSubtitles(content, videoElement, request, sendResponse) {
   try {
@@ -245,13 +336,21 @@ function processSubtitles(content, videoElement, request, sendResponse) {
     // Store current subtitles for update
     window.currentSubtitles = subtitles;
     
-    // Start displaying subtitles
+    // Try to add native track for Netflix integration
+    const nativeTrackAdded = createNativeTrack(subtitles, videoElement);
+    
+    // Always use overlay for better control and visibility
     updateSubtitleDisplay(subtitles, videoElement);
     
     console.log('[Sub Loader] Loaded', subtitles.length, 'subtitles');
+    const message = nativeTrackAdded ? 
+      `Netflix subtitles loaded: ${subtitles.length} entries` :
+      `Custom subtitles loaded: ${subtitles.length} entries (overlay mode)`;
+    
     sendResponse({ 
       success: true, 
-      count: subtitles.length 
+      count: subtitles.length,
+      message: message
     });
     
   } catch (error) {
@@ -276,6 +375,18 @@ function removeSubtitles(sendResponse) {
     const overlay = document.getElementById('sub-loader-overlay');
     if (overlay) {
       overlay.style.display = 'none';
+    }
+    
+    // Remove native tracks
+    const videoElement = getNetflixVideoElement();
+    if (videoElement) {
+      const subLoaderTracks = videoElement.querySelectorAll('track[label="Sub Loader"]');
+      subLoaderTracks.forEach(track => {
+        if (track.src) {
+          URL.revokeObjectURL(track.src);
+        }
+        track.remove();
+      });
     }
     
     // Clear stored subtitles
