@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sub Loader - Welcome</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #667eea;
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 32px;
+    }
+
+    .features {
+      margin-bottom: 32px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+
+    .feature-icon {
+      font-size: 24px;
+      margin-right: 12px;
+      min-width: 30px;
+    }
+
+    .feature-content h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+      color: #333;
+    }
+
+    .feature-content p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .usage-section {
+      background: #f0f4ff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 32px;
+    }
+
+    .usage-section h2 {
+      font-size: 18px;
+      color: #667eea;
+      margin-bottom: 12px;
+    }
+
+    .usage-steps {
+      list-style: none;
+    }
+
+    .usage-steps li {
+      margin-bottom: 10px;
+      padding-left: 24px;
+      position: relative;
+      line-height: 1.6;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .usage-steps li:before {
+      content: counter(step);
+      counter-increment: step;
+      position: absolute;
+      left: 0;
+      top: -2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .usage-steps {
+      counter-reset: step;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎬 Sub Loader</h1>
+    <p class="subtitle">Load custom subtitles on Netflix instantly</p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">📄</div>
+        <div class="feature-content">
+          <h3>Multiple Formats</h3>
+          <p>Supports VTT, SRT, ASS, and SSA subtitle formats</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-content">
+          <h3>URL or Local File</h3>
+          <p>Load subtitles from a URL or upload from your computer</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-content">
+          <h3>Easy to Use</h3>
+          <p>Simple popup interface that integrates seamlessly with Netflix</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">💾</div>
+        <div class="feature-content">
+          <h3>Recent Subtitles</h3>
+          <p>Quick access to your recently used subtitle files</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">⚙️</div>
+        <div class="feature-content">
+          <h3>Auto-Load</h3>
+          <p>Automatically load your favorite subtitles on every Netflix page</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="usage-section">
+      <h2>How to Use</h2>
+      <ol class="usage-steps">
+        <li>Go to Netflix and start playing a video</li>
+        <li>Click the Sub Loader extension icon in your toolbar</li>
+        <li>Enter a subtitle URL or click "Browse File" to upload</li>
+        <li>Select your preferred language (optional)</li>
+        <li>Click "Load Subtitles" and enjoy!</li>
+      </ol>
+    </div>
+
+    <div class="buttons">
+      <button class="btn-primary" onclick="openPopup()">Open Extension</button>
+      <button class="btn-secondary" onclick="window.close()">Close</button>
+    </div>
+
+    <div class="footer">
+      <p>Sub Loader v1.0.0 | For Netflix use only</p>
+    </div>
+  </div>
+
+  <script>
+    function openPopup() {
+      chrome.runtime.getURL('popup.html');
+      window.close();
+    }
+  </script>
+</body>
+</html>

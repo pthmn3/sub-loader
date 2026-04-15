@@ -1,0 +1,37 @@
+{
+  "name": "sub-loader",
+  "version": "1.0.0",
+  "description": "A Chrome web extension that loads custom subtitles directly onto Netflix videos",
+  "main": "content-script.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pthmn3/sub-loader.git"
+  },
+  "keywords": [
+    "netflix",
+    "subtitles",
+    "chrome-extension",
+    "srt",
+    "vtt",
+    "video",
+    "streaming"
+  ],
+  "author": "Sub Loader Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pthmn3/sub-loader/issues"
+  },
+  "homepage": "https://github.com/pthmn3/sub-loader#readme",
+  "scripts": {
+    "lint": "eslint . --ext .js",
+    "test": "echo \"No tests configured yet\"",
+    "dev": "echo \"Run chrome://extensions/ and load unpacked\"",
+    "build": "echo \"Extension is ready to load\""
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

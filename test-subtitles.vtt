@@ -1,0 +1,34 @@
+WEBVTT
+
+00:00:00.500 --> 00:00:03.000
+Welcome to Sub Loader!
+
+00:00:03.500 --> 00:00:06.000
+This is a test subtitle file
+
+00:00:06.500 --> 00:00:09.000
+Try loading this file to test
+the extension
+
+00:00:09.500 --> 00:00:12.000
+You can use this as a guide
+for your own subtitle formats
+
+00:00:12.500 --> 00:00:15.000
+WebVTT files use the .vtt extension
+
+00:00:15.500 --> 00:00:18.000
+Timestamps are in format:
+HH:MM:SS.MMM --> HH:MM:SS.MMM
+
+00:00:18.500 --> 00:00:21.000
+Subtitles can span multiple lines
+
+00:00:21.500 --> 00:00:24.000
+Just separate them with blank lines
+
+00:00:24.500 --> 00:00:27.000
+That's all you need to know!
+
+00:00:27.500 --> 00:00:30.000
+Have fun with Sub Loader 🎬

@@ -1,0 +1,40 @@
+# Ignore node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE and editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Build artifacts
+dist/
+build/
+*.zip
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.log
+temp/
+tmp/
+
+# Dependencies
+package-lock.json
+yarn.lock
+
+# OS specific
+.AppleDouble
+.LSOverride

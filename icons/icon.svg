@@ -1,0 +1,21 @@
+<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background with gradient -->
+  <rect width="128" height="128" fill="url(#grad)" rx="20"/>
+  <!-- Film strip frames -->
+  <rect x="16" y="32" width="20" height="20" fill="white" opacity="0.2"/>
+  <rect x="44" y="32" width="20" height="20" fill="white" opacity="0.2"/>
+  <rect x="72" y="32" width="20" height="20" fill="white" opacity="0.2"/>
+  <!-- Subtitle text lines -->
+  <rect x="16" y="64" width="96" height="4" fill="white" rx="2"/>
+  <rect x="16" y="74" width="80" height="4" fill="white" rx="2"/>
+  <rect x="16" y="84" width="70" height="4" fill="white" rx="2"/>
+  <!-- CC Badge -->
+  <circle cx="104" cy="104" r="14" fill="#ff6b6b"/>
+  <text x="104" y="110" font-size="10" fill="white" text-anchor="middle" font-weight="bold">CC</text>
+</svg>
