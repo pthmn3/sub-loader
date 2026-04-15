@@ -69,24 +69,49 @@ browseBtn.addEventListener('click', () => {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.vtt,.srt,.ass,.ssa';
-  input.onchange = (e) => {
+  input.style.display = 'none';
+  
+  input.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        showStatus('File is too large (max 10MB)', 'error');
+        return;
+      }
+      
       const reader = new FileReader();
-      reader.onload = (event) => {
-        const fileData = event.target.result;
-        // Store the file data with a unique URL scheme
-        const fileUrl = `data:text/plain;base64,${btoa(fileData)}`;
-        subtitleInput.value = file.name;
-        // We'll store the actual data when loading
-        chrome.storage.local.set({ 
-          pendingFileData: fileData,
-          pendingFileName: file.name
-        });
+      reader.onerror = () => {
+        showStatus('Error reading file', 'error');
+        console.error('[Sub Loader] FileReader error:', reader.error);
       };
+      reader.onload = (event) => {
+        try {
+          const fileData = event.target.result;
+          subtitleInput.value = file.name;
+          
+          // Store the actual file data for later use
+          chrome.storage.local.set({ 
+            pendingFileData: fileData,
+            pendingFileName: file.name
+          }, () => {
+            showStatus(`File selected: ${file.name}`, 'success');
+          });
+        } catch (error) {
+          showStatus('Error processing file', 'error');
+          console.error('[Sub Loader] Processing error:', error);
+        }
+      };
+      
       reader.readAsText(file);
     }
-  };
+    
+    // Clean up the input element
+    document.body.removeChild(input);
+  });
+  
+  // Add to DOM, trigger click, then remove
+  document.body.appendChild(input);
   input.click();
 });
 

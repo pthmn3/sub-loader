@@ -5,7 +5,6 @@
   "description": "Load custom subtitles on Netflix videos",
   "permissions": [
     "storage",
-    "webRequest",
     "tabs"
   ],
   "host_permissions": [
